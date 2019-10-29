@@ -29,9 +29,13 @@ import com.google.android.things.contrib.driver.apa102.Apa102;
 import com.google.android.things.contrib.driver.bmx280.Bmx280SensorDriver;
 import com.google.android.things.contrib.driver.ht16k33.AlphanumericDisplay;
 import com.google.android.things.contrib.driver.rainbowhat.RainbowHat;
+import com.opencsv.CSVWriter;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class WeatherStationActivity extends Activity {
     private static final String TAG = WeatherStationActivity.class.getSimpleName();
@@ -49,7 +53,7 @@ public class WeatherStationActivity extends Activity {
     // MODIFIED CODE: csv
     String csv;
     CSVWriter writer;
-    List<String[]> data;
+    List<String[]> data = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +64,11 @@ public class WeatherStationActivity extends Activity {
 
         // MODIFIED CODE: csv
         csv = "\\home\\josephine\\test.csv";
-        writer = new CSVWriter(new FileWriter(csv));
-        data = new List<String[]>;
+        try {
+            writer = new CSVWriter(new FileWriter(csv));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         data.add(new String[] {"Time", "Temperature"});
 
         // Initialize temperature/pressure sensors
@@ -131,7 +138,11 @@ public class WeatherStationActivity extends Activity {
 
         //MODIFIED CODE: csv
         writer.writeAll(data);
-        writer.close();
+        try {
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Close peripheral connections
         if (mEnvironmentalSensorDriver != null) {
